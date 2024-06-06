@@ -2,7 +2,6 @@ import sys
 from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QFileDialog
 from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.QtCore import Qt
-import skimage
 from PIL import Image
 import numpy as np
 import cv2
