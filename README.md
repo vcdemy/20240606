@@ -9,7 +9,7 @@ pip install PySide6
 
 ## Qt Designer 使用
 
-`designer.exe` 會在 PySide6 的套件的跟目錄。
+`designer.exe` 會在 PySide6 的套件的根目錄。
 
 ```python
 import PySide6
@@ -33,7 +33,7 @@ from PySide6.QtWidgets import QApplication, QWidget
 
 app = QApplication(sys.argv)
 window = QWidget()
-ui = test01.Ui_Form()
+ui = practice.Ui_Form()
 ui.setupUi(window)
 window.show()
 sys.exit(app.exec())
@@ -45,4 +45,21 @@ sys.exit(app.exec())
 
 
 
+* OpenCV UI
+* OpenCV mouseevent
+* gradio進一步說明
+* PyQT mouseevent
+* PyQT layout 進一步使用
+* PyQT 畫面大小的調整
+* PyQT MessageBox
+* PyQT QThread
+* PyQT pyinstaller
+* PyQT WebEngine
+    * 使用來顯示 plotly 的東西
+* Qt Designer 的使用
 
+## Applications
+
+* teachable machine 的使用
+* keras application 的使用
+* YOLO 配合 QThread 的使用
