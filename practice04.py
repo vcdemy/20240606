@@ -10,19 +10,48 @@ import cv2
 # p1 = np.float32([[95,154],[383,42],[619,373],[300,524]])
 p1 = []
 p2 = np.float32([[200,50],[480,50],[480,500],[200,500]])
+ori = None
+before = None
+after = None
 
 
 def open_file():
+    global ori, before, after
     file_name, _ = QFileDialog.getOpenFileName(window, 'Open Image File', '', 'Image Files (*.png *.jpg *.bmp)')
     if file_name:
         pixmap1 = QPixmap(file_name)
-        img = Image.open(file_name)
-        before = img.size
-        img.thumbnail((300, 300))
-        after = img.size
+        ori = Image.open(file_name)
+        before = ori.size
+        temp = ori.copy()
+        temp.thumbnail((300, 300))
+        after = temp.size
         print(before, "==>", after)
         pixmap1 = pixmap1.scaled(300, 300, aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
         label1.setPixmap(pixmap1)
+
+
+def mousePress(event):
+    print(f"{event.position().x()}, {event.position().y()}")
+    global ori, p1
+    img = np.array(ori)
+
+    if event==1:
+        x = event.position().x()
+        y = event.position().y()
+        scale = before[0] / after[0]
+        nx = (x - 150) * scale + before[0]/2
+        ny = (y - 150) * scale + before[1]/2
+        p1.append([nx, ny])
+    
+    if len(p1)==4:
+        m = cv2.getPerspectiveTransform(np.float32(p1),p2)
+        output = cv2.warpPerspective(img, m, before)
+        bytes_per_line = img.shape[1] * img.shape[2]
+        q_image = QImage(img, img.shape[1], img.shape[0], bytes_per_line, QImage.Format.Format_RGB888)
+        pixmap2 = QPixmap.fromImage(q_image)
+        pixmap2 = pixmap2.scaled(300, 300, aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
+        label2.setPixmap(pixmap2)
+        p1.clear()
 
 app = QApplication(sys.argv)
 
@@ -42,31 +71,6 @@ label2.setStyleSheet('background-color: gray')
 
 button.clicked.connect(open_file)
 button.setStyleSheet('border: 1px solid black')
-
-# pixmap1 = QPixmap('therock.jpg')
-# pixmap1 = pixmap1.scaled(300, 300, aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
-# label1.setPixmap(pixmap1)
-# pixmap2 = QPixmap('therock.jpg')
-# pixmap2 = pixmap2.scaled(300, 300, aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
-# label2.setPixmap(pixmap2)
-
-def mousePress(event):
-    print(f"{event.position().x()}, {event.position().y()}")
-    global p1
-
-    if event==1:
-        print(event)
-        p1.append([event.position().x(), event.position().y()])
-    
-    if len(p1)==4:
-        m = cv2.getPerspectiveTransform(np.float32(p1),p2)
-        output = cv2.warpPerspective(img, m, mag.size)
-        bytes_per_line = img.shape[1] * img.shape[2]
-        q_image = QImage(img, img.shape[1], img.shape[0], bytes_per_line, QImage.Format.Format_RGB888)
-        pixmap2 = QPixmap.fromImage(q_image)
-        pixmap2 = pixmap2.scaled(300, 300, aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
-        label2.setPixmap(pixmap2)
-        p1.clear()
 
 label1.mousePressEvent  = mousePress
 
