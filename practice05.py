@@ -8,23 +8,19 @@ from ultralytics import YOLO
 model = YOLO()
 file_name = None
 
+thread_a = QThread()
+thread_b = QThread()
+
 
 def open_file():
-    global file_name
+    global file_name, thread_a, thread_b
     file_name, _ = QFileDialog.getOpenFileName(window, 'Open Image File', '', 'Image Files (*.png *.jpg *.bmp)')
     if file_name:
-        # pic1(file_name)
-        # pic2(file_name)
-        thread_a = QThread()   # 建立 Thread()
         thread_a.run = pic1       # 設定該執行緒執行 a()
-        thread_a.start()       # 啟動執行緒
-
-        thread_b = QThread()   # 建立 Thread()
+        thread_a.start()          # 啟動執行緒
         thread_b.run = pic2       # 設定該執行緒執行 b()
         thread_b.start()
 
-        # thread_a.wait()
-        thread_b.wait()
 
 def pic1():
     global file_name
