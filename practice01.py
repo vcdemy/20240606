@@ -1,8 +1,9 @@
 import cv2
-img = cv2.imread('therock.jpg')
+img = cv2.imread('magazine.jpg')
 
 def show_xy(event,x,y,flags,userdata):
-    print(event,x,y,flags)
+    if event==1:
+        print(event,x,y,flags)
     # 印出相關參數的數值，userdata 可透過 setMouseCallback 第三個參數垂遞給函式
 
 cv2.imshow('oxxostudio', img)
