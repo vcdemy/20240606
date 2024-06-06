@@ -14,7 +14,6 @@ ori = None
 before = None
 after = None
 
-
 def open_file():
     global ori, before, after
     file_name, _ = QFileDialog.getOpenFileName(window, 'Open Image File', '', 'Image Files (*.png *.jpg *.bmp)')
@@ -35,23 +34,25 @@ def mousePress(event):
     global ori, p1
     img = np.array(ori)
 
-    if event==1:
-        x = event.position().x()
-        y = event.position().y()
-        scale = before[0] / after[0]
-        nx = (x - 150) * scale + before[0]/2
-        ny = (y - 150) * scale + before[1]/2
-        p1.append([nx, ny])
+    
+    x = event.position().x()
+    y = event.position().y()
+    scale = before[0] / after[0]
+    nx = (x - 150) * scale + before[0]/2
+    ny = (y - 150) * scale + before[1]/2
+    p1.append([nx, ny])
+    print(p1)
     
     if len(p1)==4:
         m = cv2.getPerspectiveTransform(np.float32(p1),p2)
         output = cv2.warpPerspective(img, m, before)
-        bytes_per_line = img.shape[1] * img.shape[2]
-        q_image = QImage(img, img.shape[1], img.shape[0], bytes_per_line, QImage.Format.Format_RGB888)
+        bytes_per_line = output.shape[1] * output.shape[2]
+        q_image = QImage(output, output.shape[1], output.shape[0], bytes_per_line, QImage.Format.Format_RGB888)
         pixmap2 = QPixmap.fromImage(q_image)
         pixmap2 = pixmap2.scaled(300, 300, aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
         label2.setPixmap(pixmap2)
         p1.clear()
+        # cv2.imwrite('output.jpg', output)
 
 app = QApplication(sys.argv)
 
