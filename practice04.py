@@ -3,11 +3,17 @@ from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QFileDia
 from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.QtCore import Qt
 import skimage
+from PIL import Image
 
 def open_file():
     file_name, _ = QFileDialog.getOpenFileName(window, 'Open Image File', '', 'Image Files (*.png *.jpg *.bmp)')
     if file_name:
         pixmap1 = QPixmap(file_name)
+        img = Image.open(file_name)
+        before = img.size
+        img.thumbnail((300, 300))
+        after = img.size
+        print(before, "==>", after)
         pixmap1 = pixmap1.scaled(300, 300, aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
         label1.setPixmap(pixmap1)
         img = skimage.io.imread(file_name)
