@@ -9,17 +9,17 @@ import cv2
 
 # p1 = np.float32([[95,154],[383,42],[619,373],[300,524]])
 p1 = []
-p2 = np.float32([[200,50],[480,50],[480,500],[200,500]])
+p2 = np.float32([[200,50],[520,50],[520,500],[200,500]])
 ori = None
 before = None
 after = None
 
 def open_file():
     global ori, before, after
-    file_name, _ = QFileDialog.getOpenFileName(window, 'Open Image File', '', 'Image Files (*.png *.jpg *.bmp)')
+    file_name, _ = QFileDialog.getOpenFileName(window, 'Open Image File', '', 'Image Files (*.png *.jpg *.bmp *.webp *.jfif)')
     if file_name:
         pixmap1 = QPixmap(file_name)
-        ori = Image.open(file_name)
+        ori = Image.open(file_name).convert('RGB')
         before = ori.size
         temp = ori.copy()
         temp.thumbnail((300, 300))
@@ -34,7 +34,6 @@ def mousePress(event):
     global ori, p1
     img = np.array(ori)
 
-    
     x = event.position().x()
     y = event.position().y()
     scale = before[0] / after[0]
