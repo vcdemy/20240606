@@ -29,7 +29,6 @@ def open_file():
 
 
 def mousePress(event):
-    print(f"{event.position().x()}, {event.position().y()}")
     global ori, p1
     img = np.array(ori)
 
