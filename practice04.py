@@ -7,9 +7,8 @@ from PIL import Image
 import numpy as np
 import cv2
 
-# p1 = np.float32([[95,154],[383,42],[619,373],[300,524]])
 p1 = []
-p2 = np.float32([[200,50],[520,50],[520,500],[200,500]])
+p2 = []
 ori = None
 before = None
 after = None
@@ -43,7 +42,11 @@ def mousePress(event):
     print(p1)
     
     if len(p1)==4:
-        m = cv2.getPerspectiveTransform(np.float32(p1),p2)
+        p2.append([before[0]/4, before[1]/10])
+        p2.append([before[0]*3/4, before[1]/10])
+        p2.append([before[0]*3/4, before[1]*9/10])
+        p2.append([before[0]/4, before[1]*9/10])
+        m = cv2.getPerspectiveTransform(np.float32(p1),np.float32(p2))
         output = cv2.warpPerspective(img, m, before)
         bytes_per_line = output.shape[1] * output.shape[2]
         q_image = QImage(output, output.shape[1], output.shape[0], bytes_per_line, QImage.Format.Format_RGB888)
@@ -51,7 +54,7 @@ def mousePress(event):
         pixmap2 = pixmap2.scaled(300, 300, aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
         label2.setPixmap(pixmap2)
         p1.clear()
-        # cv2.imwrite('output.jpg', output)
+        p2.clear()
 
 app = QApplication(sys.argv)
 
