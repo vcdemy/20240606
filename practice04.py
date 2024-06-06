@@ -4,6 +4,13 @@ from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.QtCore import Qt
 import skimage
 from PIL import Image
+import numpy as np
+import cv2
+
+# p1 = np.float32([[95,154],[383,42],[619,373],[300,524]])
+p1 = []
+p2 = np.float32([[200,50],[480,50],[480,500],[200,500]])
+
 
 def open_file():
     file_name, _ = QFileDialog.getOpenFileName(window, 'Open Image File', '', 'Image Files (*.png *.jpg *.bmp)')
@@ -16,13 +23,6 @@ def open_file():
         print(before, "==>", after)
         pixmap1 = pixmap1.scaled(300, 300, aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
         label1.setPixmap(pixmap1)
-        img = skimage.io.imread(file_name)
-        img = 255 - img
-        bytes_per_line = img.shape[1] * img.shape[2]
-        q_image = QImage(img, img.shape[1], img.shape[0], bytes_per_line, QImage.Format.Format_RGB888)
-        pixmap2 = QPixmap.fromImage(q_image)
-        pixmap2 = pixmap2.scaled(300, 300, aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
-        label2.setPixmap(pixmap2)
 
 app = QApplication(sys.argv)
 
@@ -52,6 +52,21 @@ button.setStyleSheet('border: 1px solid black')
 
 def mousePress(event):
     print(f"{event.position().x()}, {event.position().y()}")
+    global p1
+
+    if event==1:
+        print(event)
+        p1.append([event.position().x(), event.position().y()])
+    
+    if len(p1)==4:
+        m = cv2.getPerspectiveTransform(np.float32(p1),p2)
+        output = cv2.warpPerspective(img, m, mag.size)
+        bytes_per_line = img.shape[1] * img.shape[2]
+        q_image = QImage(img, img.shape[1], img.shape[0], bytes_per_line, QImage.Format.Format_RGB888)
+        pixmap2 = QPixmap.fromImage(q_image)
+        pixmap2 = pixmap2.scaled(300, 300, aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
+        label2.setPixmap(pixmap2)
+        p1.clear()
 
 label1.mousePressEvent  = mousePress
 
